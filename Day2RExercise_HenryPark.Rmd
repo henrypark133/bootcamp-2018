@@ -1,0 +1,102 @@
+---
+title: "R Day 2"
+author: "Henry Park"
+date: "9/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+here::here("data", "gapminder5.csv")
+
+gapminder <- read.csv(here::here("data", "gapminder5.csv"))
+```
+
+
+## Coverting factors to characters
+```{r}
+gapminder$country <- as.character(gapminder$country)
+gapminder$continent <- as.character(gapminder$continent)
+str(gapminder)
+```
+
+## Creating logged variable with a for loop
+
+```{r}
+# create a vector of values that you want to repeat the function for
+obs <- 1:nrow(gapminder)
+
+for (i in obs) {
+  gapminder[i, "log_gdpPercap"] <-log(gapminder[i,"gdpPercap"])
+  gapminder[i, "log_pop"] <- log(gapminder[i, "pop"])
+}
+head(gapminder)
+```
+
+```{r}
+years <- unique(gapminder$year)
+for (i in years) {
+  mean_year = mean(gapminder$lifeExp[gapminder$year ==i], na.rm = T)
+  print(paste0(i, ": ", mean_year))
+}
+```
+
+```{r}
+continents <- unique(gapminder$continent)
+for (i in continents) {
+  mean_cont = mean(gapminder$lifeExp[gapminder$continent ==i], na.rm = T)
+  print(paste0(i, ": ", mean_cont))
+}
+```
+```{r}
+years <- unique(gapminder$year)
+continents <- unique(gapminder$continent)
+for (i in continents) {
+  for (j in years) {
+  mean_continent_year = sd(gapminder$lifeExp[gapminder$year ==j & gapminder$continent== i], na.rm = T)
+  print(paste0(i, ": ", mean_continent_year))
+  }
+}
+```
+```{r}
+unique(gapminder$year)
+
+i <- 1987
+
+while (i <= 2002) {
+  print(paste0(i, " Life Expectancy: ", sd(gapminder$lifeExp[gapminder$year==i])))
+  i <- i + 5
+}
+```
+
+```{r}
+set.seed(10)
+random_year <- sample(years, 1)
+
+if (random_year > 1977) {
+  print(random_year)
+} else {
+  print("sorry, random year is less than 1977")
+}
+```
+
+```{r}
+years = unique(gapminder$year[gapminder$year >= 1987])
+sapply(years, function(x) mean(gapminder$lifeExp[gapminder$year == x]))
+
+```
+
+```{r}
+data_sum <-
+  function (df) {
+    print(paste("Mean: ", mean(df)))
+    print(paste("Median: ", median(df)))
+    print(paste("Minimum: ", min(df)))
+    print(paste("Maximum: ", max(df)))
+  }
+data_sum(gapminder$lifeExp)
+```
+
